@@ -1,0 +1,9 @@
+const express = require('express');
+const router = express.Router();
+const reportController = require('../controllers/reportController');
+const { authenticateToken } = require('../middleware/auth');
+
+router.get('/dashboard', authenticateToken, reportController.getDashboardData);
+router.get('/', authenticateToken, reportController.getReports);
+
+module.exports = router;
