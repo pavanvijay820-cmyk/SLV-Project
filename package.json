@@ -1,5 +1,5 @@
 {
-  "name": "slv-events-crm",
+  "name": "slv-events-crm-root",
   "version": "1.0.0",
   "private": true,
   "workspaces": [

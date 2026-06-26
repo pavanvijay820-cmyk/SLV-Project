@@ -601,12 +601,23 @@ class MockPool {
 const mockPool = new MockPool();
 
 (async () => {
+  // Check if we are running on Vercel without DB settings, or if USE_MOCK is explicitly requested
+  if ((process.env.VERCEL === '1' && !process.env.DB_HOST) || process.env.USE_MOCK === 'true') {
+    console.warn('\n========================================');
+    console.warn('Vercel environment detected without DB host config. FALLING BACK TO MEMORY MOCK MODE.');
+    console.warn('The application is fully operational in-memory!');
+    console.warn('========================================\n');
+    useMock = true;
+    return;
+  }
+
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST || 'localhost',
       user: process.env.DB_USER || 'root',
       password: process.env.DB_PASSWORD !== undefined ? process.env.DB_PASSWORD : '',
-      database: process.env.DB_NAME || 'slv_events_crm'
+      database: process.env.DB_NAME || 'slv_events_crm',
+      connectTimeout: 2000 // Timeout in 2s if DB is unreachable
     });
     console.log('Successfully connected to MySQL database: ' + (process.env.DB_NAME || 'slv_events_crm'));
     connection.end();
@@ -618,7 +629,8 @@ const mockPool = new MockPool();
       database: process.env.DB_NAME || 'slv_events_crm',
       waitForConnections: true,
       connectionLimit: 10,
-      queueLimit: 0
+      queueLimit: 0,
+      connectTimeout: 2000 // Timeout in 2s if DB is unreachable
     });
   } catch (error) {
     console.warn('\n========================================');
