@@ -1,24 +1,19 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "experimentalServices": {
-    "frontend": {
-      "root": "frontend",
-      "routePrefix": "/",
-      "framework": "vite"
-    },
-    "backend": {
-      "root": "backend",
-      "routePrefix": "/_/backend"
-    }
-  },
+  "buildCommand": "npm run build",
+  "outputDirectory": "frontend/dist",
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/_/backend/api/$1"
+      "destination": "/api/index.js"
     },
     {
       "source": "/health",
-      "destination": "/_/backend/health"
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/((?!api/|health).*)",
+      "destination": "/index.html"
     }
   ]
 }
