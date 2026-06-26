@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const authRoutes = require('./routes/authRoutes');
@@ -30,14 +31,17 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', time: new Date() });
 });
 
-// Root path handler
-app.get('/', (req, res) => {
-  res.send('<h1>SLV Events CRM API is running</h1>');
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, '../../frontend/dist')));
+
+// API 404 Route handler - only catch paths starting with /api/
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ success: false, message: 'API route not found' });
 });
 
-// 404 Route handler
-app.use((req, res, next) => {
-  res.status(404).json({ success: false, message: 'Resource not found' });
+// All other GET requests serve index.html (React Router handles client-side routing)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
 });
 
 // Global Error Handler
