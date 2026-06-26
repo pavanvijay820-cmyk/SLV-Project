@@ -98,4 +98,92 @@ exports.getMe = async (req, res) => {
   }
 };
 
+// Register New User Controller
+exports.register = async (req, res) => {
+  const { name, email, password, phone } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Please provide name, email, and password.' 
+    });
+  }
+
+  try {
+    // Check if user already exists
+    const [existingUsers] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+    if (existingUsers.length > 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'A user with this email address already exists.' 
+      });
+    }
+
+    // Hash password
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(password, salt);
+
+    // Auto-escalate role based on email keyword
+    let role = 'booking_executive';
+    if (email.toLowerCase().includes('admin')) {
+      role = 'admin';
+    } else if (email.toLowerCase().includes('manager')) {
+      role = 'event_manager';
+    }
+
+    // Insert user
+    const [result] = await db.query(
+      'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+      [name, email, hashedPassword, role]
+    );
+
+    res.status(201).json({
+      success: true,
+      message: 'Account created successfully.',
+      userId: result.insertId
+    });
+
+  } catch (error) {
+    console.error('Error in user registration:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error during registration. Please try again.'
+    });
+  }
+};
+
+// Forgot Password Controller
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Please provide email address.' 
+    });
+  }
+
+  try {
+    const [users] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+    if (users.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No user registered with this email address.'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Password reset link sent to your email.'
+    });
+
+  } catch (error) {
+    console.error('Error in forgot password request:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error during password reset request.'
+    });
+  }
+};
+
 

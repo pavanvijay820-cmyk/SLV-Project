@@ -262,6 +262,17 @@ class MockPool {
     }
 
     // 1. Auth check
+    if (queryLower.includes('insert into users')) {
+      const id = mockData.users.length + 1;
+      mockData.users.push({
+        id,
+        name: params[0],
+        email: params[1],
+        password: params[2],
+        role: params[3] || 'booking_executive'
+      });
+      return [{ insertId: id }];
+    }
     if (queryLower.includes('from users') && queryLower.includes('email =')) {
       const email = params[0];
       const match = mockData.users.filter(u => u.email === email);

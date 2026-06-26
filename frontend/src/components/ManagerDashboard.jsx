@@ -7,7 +7,7 @@ import {
   Check, X, Loader2
 } from 'lucide-react';
 import {
-  ResponsiveContainer, AreaChart, Area, BarChart, Bar, LineChart, Line,
+  ResponsiveContainer, AreaChart, Area, BarChart, Bar,
   XAxis, YAxis, Tooltip, CartesianGrid, Legend, PieChart, Pie, Cell
 } from 'recharts';
 import { useToast } from '../context/ToastContext';
@@ -343,33 +343,6 @@ const ManagerDashboard = ({ summary, charts, refreshData }) => {
             ))}
           </div>
         </div>
-
-        {/* Chart 5: Monthly Enquiry Volume */}
-        <div className="lg:col-span-3 bg-slate-900/55 border border-slate-850 rounded-2xl p-5 shadow-lg backdrop-blur-xl h-[330px] flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-purple-400">Monthly Enquiry Volume</h4>
-              <p className="text-[10px] text-slate-450">Total incoming leads trends (6 MoM)</p>
-            </div>
-            <span className="text-[9px] bg-purple-900/40 text-purple-300 font-bold border border-purple-800/40 px-2 py-0.5 rounded-full uppercase">
-              Average: 32.6/mo
-            </span>
-          </div>
-          <div className="flex-1 min-h-[200px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={monthlyTrendData} margin={{ top: 15, right: 10, left: -25, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1e293b" />
-                <XAxis dataKey="name" stroke="#64748b" fontSize={10} tickLine={false} />
-                <YAxis stroke="#64748b" fontSize={10} tickLine={false} allowDecimals={false} />
-                <Tooltip
-                  contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '12px', color: '#fff' }}
-                />
-                <Line type="monotone" dataKey="enquiries" stroke="#3B82F6" strokeWidth={3} dot={{ r: 4, stroke: '#3B82F6', strokeWidth: 1 }} activeDot={{ r: 6 }} name="Enquiries" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
       </div>
 
       {/* Pending Approvals Panel */}
