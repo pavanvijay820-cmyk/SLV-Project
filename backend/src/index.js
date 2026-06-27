@@ -31,17 +31,9 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', time: new Date() });
 });
 
-// Serve static files from the React frontend app
-app.use(express.static(path.join(__dirname, '../../frontend/dist')));
-
 // API 404 Route handler - only catch paths starting with /api/
 app.use('/api/*', (req, res) => {
   res.status(404).json({ success: false, message: 'API route not found' });
-});
-
-// All other GET requests serve index.html (React Router handles client-side routing)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
 });
 
 // Global Error Handler

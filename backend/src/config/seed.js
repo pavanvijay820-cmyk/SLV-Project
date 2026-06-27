@@ -35,7 +35,7 @@ async function seedDatabase() {
     }
 
     const schemaSql = fs.readFileSync(schemaPath, 'utf8');
-    
+
     // Split SQL by semicolon but be careful about comments/newlines
     // A simple split by semicolon will work for standard DDL statements
     const statements = schemaSql
