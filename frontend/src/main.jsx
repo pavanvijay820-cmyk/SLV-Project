@@ -22,6 +22,16 @@ if (typeof window !== 'undefined') {
   }
 }
 
+// If apiUrl is defined but doesn't have a protocol prefix, prepend protocol
+if (apiUrl && !apiUrl.startsWith('http://') && !apiUrl.startsWith('https://')) {
+  if (apiUrl.includes('localhost') || apiUrl.includes('127.0.0.1')) {
+    apiUrl = `http://${apiUrl}`;
+  } else {
+    apiUrl = `https://${apiUrl}`;
+  }
+  console.log('App Startup: Prepend protocol to VITE_API_URL =', apiUrl);
+}
+
 axios.defaults.baseURL = apiUrl;
 console.log('App Startup: axios.defaults.baseURL =', axios.defaults.baseURL);
 
